@@ -1,1 +1,1 @@
-# odin-calculator
+Initial commit
