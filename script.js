@@ -29,7 +29,12 @@ function operate(n1, n2, op) {
   }
 }
 
-// Variables for display and calculations
+// Variables for calculations
 let n1; // number 1 input
 let n2; // number 2 input
 let op; // operator
+
+let buttons = document.querySelectorAll("button");
+
+// event listeners
+buttons.forEach((button) => button.addEventListener("click", (e) => {}));
