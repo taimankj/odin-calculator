@@ -21,7 +21,8 @@ function multiply(n1, n2) {
 }
 
 function divide(n1, n2) {
-  return n1 / n2;
+  // Rounds to the nearest integer, and then divides
+  return Math.round((n1 / n2 + Number.EPSILON) * 100) / 100;
 }
 
 function operate(n1, n2, op) {
@@ -56,6 +57,14 @@ function clearState() {
   op = "";
 }
 
+function evaluateCalculation() {
+  let calculatedVal = operate(+n1, +n2, op);
+
+  historyArea.innerText = `${n1} ${op} ${n2}`;
+  outputArea.innerText = `${calculatedVal} ${op}`;
+  n1 = `${calculatedVal}`;
+  n2 = "";
+}
 function processInput(input) {
   /* 
   if operator is equals and if n1, op, and n2 is set,
@@ -78,20 +87,37 @@ function processInput(input) {
   */
 
   if (input == "=" && isSet(n1, n2, op)) {
-    let calculatedVal = operate(+n1, +n2, op);
-
-    historyArea.innerText = `${n1} ${op} ${n2}`;
-    outputArea.innerText = `${calculatedVal} ${op}`;
-    n1 = `${calculatedVal}`;
-    n2 = "";
+    evaluateCalculation();
     return;
   } else if (input == "clear") {
     clearState();
+  } else if (input == ".") {
+    if (isSet(op) && !n2.includes(".")) {
+      n2 += input;
+      outputArea.innerText = `${n1} ${op} ${n2}`;
+      return;
+    }
+
+    if (isSet(n1) && !isSet(op) && !n1.includes(".")) {
+      n1 += input;
+      outputArea.innerText = `${n1} ${op} ${n2}`;
+      return;
+    }
   } else if (Number.isNaN(+input)) {
+    if (isSet(n1, n2, op)) {
+      evaluateCalculation();
+      op = input;
+      outputArea.innerText = `${n1} ${op} `;
+      return;
+    }
     if (!isSet(n1)) n1 = "0";
     op = input;
   } else {
     if (isSet(op)) {
+      if (!isSet(n2) && input == "0" && op == "/") {
+        alert("WTH, who said you can do that?!");
+        return;
+      }
       if (isSet(n2)) {
         n2 += input;
       } else {
